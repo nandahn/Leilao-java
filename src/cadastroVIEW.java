@@ -136,11 +136,46 @@ public class cadastroVIEW extends javax.swing.JFrame {
 
     private void cadastroNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastroNomeActionPerformed
         
-        
     }//GEN-LAST:event_cadastroNomeActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        ProdutosDTO produto = new ProdutosDTO();
+
+        
+        try{
+            String nome = cadastroNome.getText();
+            String valor = cadastroValor.getText();
+            String status = "A venda";
+            
+            
+         ProdutosDTO produto = new ProdutosDTO();
+         produto.setNome(nome);
+         produto.setValor(Integer.parseInt(valor));
+         produto.setStatus(status);
+         
+         ProdutosDAO produtodao = new ProdutosDAO();
+         boolean sucesso = produtodao.cadastrarProduto(produto);
+         
+         
+         if(sucesso){
+         
+             javax.swing.JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso");
+             cadastroNome.setText("");
+             cadastroValor.setText("");
+         } else{
+             javax.swing.JOptionPane.showMessageDialog(this, "Erro ao cadastrar o produto");
+         }
+         
+        } catch (NumberFormatException e){
+            javax.swing.JOptionPane.showMessageDialog(this, "O valor deve ser um numero");
+          
+        } catch (Exception e){
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
+        }
+        
+        
+        
+        /*
+        ProdutosDTO produto = new ProdutosDTO();;
         String nome = cadastroNome.getText();
         String valor = cadastroValor.getText();
         String status = "A Venda";
@@ -150,7 +185,7 @@ public class cadastroVIEW extends javax.swing.JFrame {
         
         ProdutosDAO produtodao = new ProdutosDAO();
         produtodao.cadastrarProduto(produto);
-        
+        */
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosActionPerformed
