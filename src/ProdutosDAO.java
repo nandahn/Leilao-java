@@ -8,35 +8,59 @@
  * @author Adm
  */
 
-import java.sql.PreparedStatement;
 import java.sql.Connection;
-import javax.swing.JOptionPane;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
 public class ProdutosDAO {
-    
-    Connection conn;
-    PreparedStatement prep;
-    ResultSet resultset;
-    ArrayList<ProdutosDTO> listagem = new ArrayList<>();
-    
-    public void cadastrarProduto (ProdutosDTO produto){
-        
-        
-        //conn = new conectaDAO().connectDB();
-        
-        
+   
+
+    public boolean cadastrarProduto(ProdutosDTO produto) {
+        String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
+
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, produto.getNome());
+            pst.setInt(2, produto.getValor());
+            pst.setString(3, produto.getStatus());
+
+            int linhasAfetadas = pst.executeUpdate();
+            return linhasAfetadas > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-    
-    public ArrayList<ProdutosDTO> listarProdutos(){
-        
+
+    public ArrayList<ProdutosDTO> listarProdutos() {
+        ArrayList<ProdutosDTO> listagem = new ArrayList<>();
+        String sql = "SELECT * FROM produtos";
+
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setValor(rs.getInt("valor"));
+                produto.setStatus(rs.getString("status"));
+                listagem.add(produto);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return listagem;
     }
-    
-    
-    
-        
 }
+
+
 
