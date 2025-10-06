@@ -88,15 +88,19 @@ public class ProdutosDAO {
         return listagemVendidos;
     }
     
-    public void venderProduto(int id) {
+    public boolean venderProduto(int id) {
     String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+
     try (Connection conn = conectaDAO.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, id);
-        stmt.executeUpdate();
-        System.out.println("Produto vendido com sucesso!");
+         PreparedStatement pst = conn.prepareStatement(sql)) {
+
+        pst.setInt(1, id);
+        int linhasAfetadas = pst.executeUpdate();
+        return linhasAfetadas > 0;
+
     } catch (SQLException e) {
-        System.out.println("Erro ao vender produto: " + e.getMessage());
+        e.printStackTrace();
+        return false;
     }
 }
 }
